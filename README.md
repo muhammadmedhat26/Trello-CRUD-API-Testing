@@ -10,8 +10,7 @@ The framework validates the functionality of Trello resources through:
 * Authentication validation
 * Missing field validation
 * Invalid parameter validation
-* Cascading deletion behavior
-
+* 
 ---
 
 ## Tech Stack
@@ -67,16 +66,6 @@ Tests:
 * Invalid Board ID
 * Invalid List ID
 * Invalid Card ID
-
----
-
-### Tier 2C - Cascading Behavior
-
-Tests:
-
-* Delete Board → Lists become inaccessible
-* Delete List → Cards become inaccessible
-* Delete Card → Checklists become inaccessible
 
 ---
 
