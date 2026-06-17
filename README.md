@@ -137,18 +137,6 @@ git --version
 
 ---
 
-### 5. Allure Commandline
-
-Install Allure.
-
-Verify:
-
-```bash
-allure --version
-```
-
----
-
 ## Clone the Repository
 
 ```bash
@@ -168,6 +156,8 @@ Before running the tests, create your Trello API credentials.
 Visit:
 
 https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/
+OR directly visit
+https://trello.com/power-ups/admin
 
 Generate your API Key.
 
@@ -244,11 +234,19 @@ mvn clean test
 Examples:
 
 ```bash
+mvn -Dtest=CreateGetTests test
+```
+
+```bash
 mvn -Dtest=AuthenticationTests test
 ```
 
 ```bash
-mvn -Dtest=CreateGetTests test
+mvn -Dtest=ParamterTests test
+```
+
+```bash
+mvn -Dtest=UpdateGetTests test
 ```
 
 ```bash
