@@ -10,7 +10,6 @@ The framework validates the functionality of Trello resources through:
 * Authentication validation
 * Missing field validation
 * Invalid parameter validation
-* 
 ---
 
 ## Tech Stack
