@@ -1,345 +1,143 @@
-# Trello CRUD API Testing Framework
+# Trello API Test Automation
 
-## Overview
+Automated REST API test suite for Trello, built with **RestAssured**, **TestNG**, and **Allure**. The project validates a full CRUD user journey across Trello's Board → List → Card → Checklist hierarchy, along with authentication failures, parameter validation, and resource-not-found behavior.
 
-This project is an automated API testing framework for the Trello REST API using **Java**, **REST Assured**, **TestNG**, and **Allure Reporting**.
+This started as a manual Postman test case design exercise and was converted into a maintainable Java automation suite, with the original Postman collection kept as a reference and exploration tool.
 
-The framework validates the functionality of Trello resources through:
+## What This Project Tests
 
-* CRUD operations (Create, Read, Update, Delete)
-* Authentication validation
-* Missing field validation
-* Invalid parameter validation
----
+The suite is organized into independent test classes covering four areas:
+
+| Area | Class | What it verifies |
+|---|---|---|
+| **CRUD Journey** | `CreateGetTests2`, `UpdateGetTests`, `DeleteGetTests` | End-to-end lifecycle: create → verify → update → verify → archive/delete → verify, across Board, List, Card, and Checklist |
+| **Authentication** | `AuthenticationTests` | Missing/invalid `key` and `token` combinations on every endpoint, and the exact error message Trello returns for each |
+| **Parameter Validation** | `ParameterTests` | Missing required fields, missing path parameters, and nonexistent resource IDs |
+| **Cascading Failures** | *(manual, in progress)* | Behavior when operating on child resources after a parent has been deleted |
+
+A full breakdown of every test case — ID, title, request data, and expected/actual result — lives in [`docs/TEST_CASES.md`](docs/TEST_CASES.md).
 
 ## Tech Stack
 
-| Technology    | Usage                 |
-| ------------- | --------------------- |
-| Java          | Programming Language  |
-| REST Assured  | API Testing           |
-| TestNG        | Test Framework        |
-| Maven         | Dependency Management |
-| Allure        | Reporting             |
-| IntelliJ IDEA | IDE                   |
-| Postman       | Manual API Testing    |
+- **Java 11+**
+- **Maven** — build and dependency management
+- **RestAssured** — HTTP request execution and response assertions
+- **TestNG** — test runner, execution ordering via `dependsOnMethods`
+- **Allure** — HTML test reporting
 
----
+## Prerequisites
 
-## Test Coverage
+- Java JDK 11 or higher
+- Maven
+- A Trello account
+- A Trello API **key** and **token**
 
-### Tier 1 - End-to-End CRUD
+### Generating a Trello API Key and Token
 
-Tests the complete business flow:
+1. Log into Trello, then go to **https://trello.com/power-ups/admin** (or `https://trello.com/app-key` on older accounts).
+2. Copy the **API Key** shown on that page.
+3. Click the **Token** link on the same page (or visit the manual token generation URL Trello provides), and authorize it. This generates a **Token** scoped to your account.
+4. Keep both values handy — you'll paste them into `BaseTest.java` in the next step.
 
-* Create Board
-* Create List
-* Create Card
-* Create Checklist
-* Get Resources
-* Update Resources
-* Delete Resources
+> Tokens can expire or be revoked. If you start getting unexpected `401` errors across previously-passing tests, regenerate your token first.
 
----
+## Project Structure
 
-### Tier 2A - Authentication
+```
+src/test/java/
+├── BaseTest.java              # Shared constants (KEY, TOKEN, BASE_URL) + smart getters/setters for resource IDs
+├── ConfigUtils.java           # Persists generated IDs to a properties file between runs
+├── CreateGetTests2.java       # Tier 1 — Create + Get verification (Board → List → Card → Checklist)
+├── UpdateGetTests.java        # Tier 1 — Update + Get verification
+├── DeleteGetTests.java        # Tier 1 — Delete/Archive + Get verification
+├── AuthenticationTests.java   # Tier 2A — Auth failure cases
+└── ParameterTests.java        # Tier 2B — Parameter/path validation cases
 
-Tests API authentication:
+src/test/resources/
+├── testng.xml                 # Suite definition and class execution order
+└── trello_runtime.properties  # Auto-generated — stores the last run's resource IDs
 
-* Missing API Key
-* Missing Token
+docs/
+└── TEST_CASES.md              # Full test case inventory (ID, steps, expected/actual results)
 
-Expected Result:
-
-* HTTP 401 Unauthorized
-
----
-
-### Tier 2B - Missing Fields & Invalid Parameters
-
-Tests:
-
-* Missing Board Name
-* Missing List Name
-* Missing Card Name
-* Invalid Board ID
-* Invalid List ID
-* Invalid Card ID
-
----
-
-## Repository Structure
-
-```text
-Trello-CRUD-API-Testing
-
-src
-└── test
-    ├── java
-    │   ├── BaseTest.java
-    │   ├── AuthenticationTests.java
-    │   ├── CreateGetTests.java
-    │   ├── UpdateGetTests.java
-    │   ├── DeleteGetTests.java
-    │   ├── ParameterTests.java
-    │   └── ConfigUtils.java
-    │
-    └── resources
-
-allure-results
-
-pom.xml
+postman/
+├── Trello APIs.postman_collection.json
+└── TrelloEnv.postman_environment.json
 ```
 
----
+## Setup
 
-# Prerequisites
+1. Clone the repository.
+2. Open `BaseTest.java` and replace the placeholder values:
+   ```java
+   protected static final String KEY   = "your_key_here";
+   protected static final String TOKEN = "your_token_here";
+   ```
+3. From the project root, install dependencies:
+   ```
+   mvn clean install
+   ```
 
-Install the following before running the project:
+## Running the Tests
 
-### 1. Java JDK
+### Run everything (recommended order)
 
-Recommended:
+The full suite runs Create → Update → Delete → Auth → Parameter tests in the order defined in `testng.xml`:
 
-* Java 17 or later
-
-Verify:
-
-```bash
-java -version
+```
+mvn test
 ```
 
----
+This uses `src/test/resources/testng.xml`, which lists the classes in the correct dependency order:
 
-### 2. IntelliJ IDEA
-
-Install IntelliJ IDEA Community or Ultimate Edition.
-
----
-
-### 3. Maven
-
-Verify:
-
-```bash
-mvn -version
+```xml
+<class name="CreateGetTests2"/>
+<class name="AuthenticationTests"/>
+<class name="ParameterTests"/>
+<class name="UpdateGetTests"/>
+<class name="DeleteGetTests"/>
 ```
 
----
+### Viewing the Allure report
 
-### 4. Git
+After a run:
 
-Verify:
-
-```bash
-git --version
+```
+mvn allure:report
+mvn allure:serve
 ```
 
----
+`allure:serve` opens the report directly in your browser.
 
-## Clone the Repository
+## Running Tests Separately
 
-```bash
-git clone https://github.com/muhammadmedhat26/Trello-CRUD-API-Testing.git
+Each test class can technically run on its own, but `AuthenticationTests` and `ParameterTests` depend on a Board/List/Card/Checklist already existing — they don't create their own data. This is handled through **`BaseTest`'s smart getters**, not the optional `@BeforeClass` isolation block:
 
-cd Trello-CRUD-API-Testing
-```
+- `getBoardId()`, `getListId()`, `getCardId()`, `getChecklistId()` first check in-memory static fields.
+- If those are empty (e.g. you're running `AuthenticationTests` in a fresh JVM without running `CreateGetTests2` first), the getters fall back to reading the last known IDs from `trello_runtime.properties` — written automatically by `CreateGetTests2` via the matching setters (`setBoardId()`, etc.).
 
----
+**Practical workflow:**
 
-# Trello API Setup
+1. Run `CreateGetTests2` once to generate fresh, live resources. IDs are saved to the properties file automatically.
+2. Run `AuthenticationTests` or `ParameterTests` on their own, as many times as you like — they'll reuse the IDs from the properties file.
+3. Run `DeleteGetTests` last, once you're done, to clean up the created board (and therefore its list and card).
 
-Before running the tests, create your Trello API credentials.
+> Running `AuthenticationTests` or `ParameterTests` *after* `DeleteGetTests` has already run will fail, since the stored IDs will point to resources that no longer exist. Re-run `CreateGetTests2` to refresh them.
 
-## Step 1 - Generate API Key
+To run a single class directly from your IDE, just right-click and run — no special configuration needed beyond having valid IDs available as described above.
 
-Visit:
+## Known Trello API Behaviors
 
-https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/
-OR directly visit
-https://trello.com/power-ups/admin
+A few real responses from Trello diverge from what the official documentation implies. These are captured precisely in the test assertions and worth knowing if you're extending the suite:
 
-Generate your API Key.
+- Lists cannot be hard-deleted via the API — `DELETE` is not supported on lists. The only removal mechanism is archiving (`PUT /1/lists/{id}/closed?value=true`), which returns `200` with `closed: true`, not `404`.
+- A nonexistent `idBoard` on list creation returns `401 "unauthorized board list requested {id}"`, not the `400` you'd expect for a malformed parameter.
+- A nonexistent `idCard` on checklist creation returns `401 "unauthorized board requested"`.
+- A nonexistent `idList` on card creation returns `404 "could not find the board that the card belongs to"`.
+- A nonexistent `listId` on `GET`/`PUT`/Archive returns `404 "model not found"`, while the equivalent case for boards, cards, and checklists returns `404 "The requested resource was not found."`
+- Omitting a required path ID entirely (e.g. `PUT /1/boards/`) returns a routing-level `404` with a raw `"Cannot PUT /1/boards/?..."` message, distinct from the resource-not-found message above.
+- A GET request missing **both** `key` and `token` returns `401 "unauthorized permission requested"`, while every other method missing both returns `401 "missing scopes"` instead.
 
----
+## License
 
-## Step 2 - Generate Token
-
-Generate your API Token from the Trello Developer page.
-
----
-
-## Step 3 - Configure Environment Variables
-
-Create the following environment variables:
-
-### Windows
-
-```cmd
-setx TRELLO_API_KEY "your_api_key"
-
-setx TRELLO_TOKEN "your_token"
-```
-
-Restart IntelliJ after setting them.
-
----
-
-## Verify Environment Variables
-
-In Command Prompt:
-
-```cmd
-echo %TRELLO_API_KEY%
-
-echo %TRELLO_TOKEN%
-```
-
----
-
-# Import Project into IntelliJ
-
-1. Open IntelliJ IDEA
-
-2. Click:
-
-```text
-Open Project
-```
-
-3. Select:
-
-```text
-Trello-CRUD-API-Testing
-```
-
-4. Wait for Maven dependencies to download.
-
----
-
-# Running Tests
-
-## Run all tests
-
-Using Maven:
-
-```bash
-mvn clean test
-```
-
----
-
-## Run specific TestNG class
-
-Examples:
-
-```bash
-mvn -Dtest=CreateGetTests test
-```
-
-```bash
-mvn -Dtest=AuthenticationTests test
-```
-
-```bash
-mvn -Dtest=ParamterTests test
-```
-
-```bash
-mvn -Dtest=UpdateGetTests test
-```
-
-```bash
-mvn -Dtest=DeleteGetTests test
-```
-
----
-
-# Generate Allure Report
-
-After test execution:
-
-```bash
-allure serve allure-results
-```
-
-Or:
-
-```bash
-allure generate allure-results --clean
-
-allure open allure-report
-```
-
----
-
-# Postman Collection
-
-This repository also includes Postman files for manual API testing.
-
-## Import Collection
-
-1. Open Postman
-
-2. Click:
-
-```text
-Import
-```
-
-3. Select:
-
-```text
-Trello Collection.json
-```
-
----
-
-## Import Environment
-
-1. Click:
-
-```text
-Import
-```
-
-2. Select:
-
-```text
-Trello Environment.json
-```
-
-3. Choose the imported environment from the top-right dropdown.
-
----
-
-## Configure Variables
-
-
-with your Trello credentials.
-
----
-
-# Test Execution Report
-
-The repository contains:
-
-* Automated API Tests
-* Test Case Excel Report
-* Allure Results
-* Postman Collection
-* Postman Environment
-
----
-
-# Author
-
-**Muhammad Medhat**
-
-QA Engineer | API Testing | Automation Testing
-
-GitHub:
-
-https://github.com/muhammadmedhat26
-
----
+This project is for personal learning and portfolio purposes.
