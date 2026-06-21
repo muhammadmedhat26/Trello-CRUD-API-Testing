@@ -107,13 +107,6 @@ Steps 2–3 run before update/delete intentionally, so the resources they refere
 | Boundary | Long-string and whitespace-only input on board name |
 | Exploratory | Manual Postman testing prior to/alongside automation |
 
-**Known API behaviors asserted against** (verified live, not assumed from docs):
-- GET with both credentials missing → `401 "unauthorized permission requested"`; every other method → `401 "missing scopes"`
-- Lists are archived, never hard-deleted (`PUT .../closed?value=true` → `200`, never `404`)
-- Nonexistent `idBoard`/`idCard` on creation → `401`, not `400`
-- Nonexistent `listId` → `"model not found"`; same case for board/card/checklist → `"The requested resource was not found."`
-- Missing path ID entirely → routing-level `404` (`"Cannot PUT ..."`), distinct from the not-found message above
-
 ---
 
 ## 7. Deliverables, Tools, and Roles
@@ -136,5 +129,5 @@ Steps 2–3 run before update/delete intentionally, so the resources they refere
 ## Open Items
 
 - `ParameterTests.java` has 2 test methods (`createBoard_boundaryLongName`, `createBoard_whitespaceOnlyName`) not yet reflected in `TEST_CASES.md`
-- `pom.xml` includes an unused Selenium dependency — confirm if planned or remove
+- `pom.xml` includes an unused Selenium dependency
 - Both `AuthenticationTests.java` and `ParameterTests.java` carry a large commented-out `@BeforeClass` block, safe to delete
