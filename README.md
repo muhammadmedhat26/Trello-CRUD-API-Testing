@@ -66,14 +66,15 @@ src/test/java/
 ├── CreateGetTests2.java       # Tier 1 — Create + Get verification (Board → List → Card → Checklist)
 ├── UpdateGetTests.java        # Tier 1 — Update + Get verification
 ├── DeleteGetTests.java        # Tier 1 — Delete/Archive + Get verification
-├── AuthenticationTests.java   # Tier 2A — Auth failure cases
-└── ParameterTests.java        # Tier 2B — Parameter/path validation cases
+├── AuthenticationTests.java   # Tier 2 — Auth failure cases
+└── ParameterTests.java        # Tier 3 — Parameter/path validation cases
 
 src/test/resources/
 ├── testng.xml                 # Suite definition and class execution order
 └── trello_runtime.properties  # Auto-generated — stores the last run's resource IDs
 
 docs/
+├── TestPlan.md                 # Full Test Plan
 └── TEST_CASES.md              # Full test case inventory (ID, steps, expected/actual results)
 
 postman/
