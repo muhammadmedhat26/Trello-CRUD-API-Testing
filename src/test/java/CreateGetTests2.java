@@ -29,13 +29,9 @@ public class CreateGetTests2 extends BaseTest {
                 .time(lessThan(5000L))
                 .extract().response();
 
-        // REMOVED / CHANGED:
-        // boardId = response.path("id");
 
-        // ADDED: Saves to memory and updates properties file
         setBoardId(response.path("id"));
 
-        // HIGHLIGHT: Changed field access to use the getter method safely
         System.out.println(getBoardId());
     }
 
@@ -47,12 +43,10 @@ public class CreateGetTests2 extends BaseTest {
                 .queryParam("key", KEY)
                 .queryParam("token", TOKEN)
                 .when()
-                // HIGHLIGHT: Changed 'boardId' to 'getBoardId()'
                 .get("/1/boards/{id}", getBoardId())
                 .then()
                 .log().body()
                 .statusCode(200)
-                // HIGHLIGHT: Changed 'boardId' to 'getBoardId()' in assertions
                 .body("id", equalTo(getBoardId()))
                 .body("name", equalTo("Automation Board2"))
                 .body("desc", equalTo("This is my board for my tasks"))
@@ -67,7 +61,6 @@ public class CreateGetTests2 extends BaseTest {
                 .queryParam("key", KEY)
                 .queryParam("token", TOKEN)
                 .queryParam("name", "Automation List")
-                // HIGHLIGHT: Changed 'boardId' to 'getBoardId()'
                 .queryParam("idBoard", getBoardId())
                 .when()
                 .post("/1/lists")
@@ -76,15 +69,11 @@ public class CreateGetTests2 extends BaseTest {
                 .statusCode(200)
                 .body("id", notNullValue())
                 .body("name", equalTo("Automation List"))
-                // HIGHLIGHT: Changed 'boardId' to 'getBoardId()'
                 .body("idBoard", equalTo(getBoardId()))
                 .body("closed", equalTo(false))
                 .extract().response();
 
-        // REMOVED / CHANGED:
-        // listId = response.path("id");
 
-        // ADDED: Saves to memory and updates properties file
         setListId(response.path("id"));
     }
 
@@ -96,12 +85,10 @@ public class CreateGetTests2 extends BaseTest {
                 .queryParam("key", KEY)
                 .queryParam("token", TOKEN)
                 .when()
-                // HIGHLIGHT: Changed 'listId' to 'getListId()'
                 .get("/1/lists/{id}", getListId())
                 .then()
                 .log().body()
                 .statusCode(200)
-                // HIGHLIGHT: Changed fields to getter methods
                 .body("id", equalTo(getListId()))
                 .body("name", equalTo("Automation List"))
                 .body("idBoard", equalTo(getBoardId()))
@@ -116,7 +103,6 @@ public class CreateGetTests2 extends BaseTest {
                 .queryParam("key", KEY)
                 .queryParam("token", TOKEN)
                 .queryParam("name", "Automation Card")
-                // HIGHLIGHT: Changed 'listId' to 'getListId()'
                 .queryParam("idList", getListId())
                 .when()
                 .post("/1/cards")
@@ -124,15 +110,11 @@ public class CreateGetTests2 extends BaseTest {
                 .statusCode(200)
                 .body("id", notNullValue())
                 .body("name", equalTo("Automation Card"))
-                // HIGHLIGHT: Changed 'listId' to 'getListId()'
                 .body("idList", equalTo(getListId()))
                 .body("closed", equalTo(false))
                 .extract().response();
 
-        // REMOVED / CHANGED:
-        // cardId = response.path("id");
 
-        // ADDED: Saves to memory and updates properties file
         setCardId(response.path("id"));
     }
 
@@ -144,12 +126,10 @@ public class CreateGetTests2 extends BaseTest {
                 .queryParam("key", KEY)
                 .queryParam("token", TOKEN)
                 .when()
-                // HIGHLIGHT: Changed 'cardId' to 'getCardId()'
                 .get("/1/cards/{id}", getCardId())
                 .then()
                 .log().body()
                 .statusCode(200)
-                // HIGHLIGHT: Changed fields to getter methods
                 .body("id", equalTo(getCardId()))
                 .body("name", equalTo("Automation Card"))
                 .body("idList", equalTo(getListId()))
@@ -164,7 +144,6 @@ public class CreateGetTests2 extends BaseTest {
                 .queryParam("key", KEY)
                 .queryParam("token", TOKEN)
                 .queryParam("name", "Automation Checklist")
-                // HIGHLIGHT: Changed 'cardId' to 'getCardId()'
                 .queryParam("idCard", getCardId())
                 .when()
                 .post("/1/checklists")
@@ -172,14 +151,9 @@ public class CreateGetTests2 extends BaseTest {
                 .statusCode(200)
                 .body("id", notNullValue())
                 .body("name", equalTo("Automation Checklist"))
-                // HIGHLIGHT: Changed 'cardId' to 'getCardId()'
                 .body("idCard", equalTo(getCardId()))
                 .extract().response();
 
-        // REMOVED / CHANGED:
-        // checklistId = response.path("id");
-
-        // ADDED: Saves to memory and updates properties file
         setChecklistId(response.path("id"));
     }
 
@@ -191,12 +165,10 @@ public class CreateGetTests2 extends BaseTest {
                 .queryParam("key", KEY)
                 .queryParam("token", TOKEN)
                 .when()
-                // HIGHLIGHT: Changed 'checklistId' to 'getChecklistId()'
                 .get("/1/checklists/{id}", getChecklistId())
                 .then()
                 .log().body()
                 .statusCode(200)
-                // HIGHLIGHT: Changed fields to getter methods
                 .body("id", equalTo(getChecklistId()))
                 .body("name", equalTo("Automation Checklist"))
                 .body("idCard", equalTo(getCardId()));

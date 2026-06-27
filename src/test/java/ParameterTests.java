@@ -6,47 +6,6 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class ParameterTests extends BaseTest {
 
-//    @BeforeClass
-//    public void setupIsolatedData() {
-//        if (getBoardId() == null || getListId() == null || getCardId() == null || getChecklistId() == null) {
-//            System.out.println("Running in isolation mode: Generating temporary Trello IDs...");
-//
-//            Response boardResp = given()
-//                    .baseUri(BASE_URL)
-//                    .queryParam("key",   KEY)
-//                    .queryParam("token", TOKEN)
-//                    .queryParam("name",  "Temp Trello Board")
-//                    .post("/1/boards/");
-//            boardId = boardResp.path("id");
-//
-//            Response listResp = given()
-//                    .baseUri(BASE_URL)
-//                    .queryParam("key",     KEY)
-//                    .queryParam("token",   TOKEN)
-//                    .queryParam("name",    "Temp List")
-//                    .queryParam("idBoard", getBoardId())
-//                    .post("/1/lists");
-//            listId = listResp.path("id");
-//
-//            Response cardResp = given()
-//                    .baseUri(BASE_URL)
-//                    .queryParam("key",    KEY)
-//                    .queryParam("token",  TOKEN)
-//                    .queryParam("name",   "Temp Card")
-//                    .queryParam("idList", getListId())
-//                    .post("/1/cards");
-//            cardId = cardResp.path("id");
-//
-//            Response chkResp = given()
-//                    .baseUri(BASE_URL)
-//                    .queryParam("key",    KEY)
-//                    .queryParam("token",  TOKEN)
-//                    .queryParam("name",   "Temp Checklist")
-//                    .queryParam("idCard", getCardId())
-//                    .post("/1/checklists");
-//            checklistId = chkResp.path("id");
-//        }
-//    }
 
     // ─────────────────────────────────────────────
     // BOARD

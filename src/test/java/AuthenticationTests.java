@@ -10,42 +10,6 @@ public class AuthenticationTests extends BaseTest {
     // BOARD
     // ─────────────────────────────────────────────
 
-    //    @BeforeClass
-//    public void setupIsolatedData() {
-//        // If boardID is null (meaning CreateGetTests didn't run first),
-//        // we create a temporary standalone Trello environment just for this execution.
-//        if (boardID == null || listId == null || cardID == null || checklistId == null) {
-//            System.out.println("Running in isolation mode: Generating temporary Trello IDs...");
-//
-//            // 1. Create temporary Board
-//            Response boardResp = given()
-//                    .baseUri(BASE_URL)
-//                    .queryParams("key", KEY, "token", TOKEN, "name", "Temp Trello Board")
-//                    .post("/1/boards/");
-//            boardID = boardResp.path("id");
-//
-//            // 2. Create temporary List inside that board
-//            Response listResp = given()
-//                    .baseUri(BASE_URL)
-//                    .queryParams("key", KEY, "token", TOKEN, "name", "Temp List", "idBoard", boardID)
-//                    .post("/1/lists");
-//            listId = listResp.path("id");
-//
-//            // 3. Create temporary Card inside that list
-//            Response cardResp = given()
-//                    .baseUri(BASE_URL)
-//                    .queryParams("key", KEY, "token", TOKEN, "name", "Temp Card", "idList", listId)
-//                    .post("/1/cards");
-//            cardID = cardResp.path("id");
-//
-//            // 4. Create temporary Checklist inside that card
-//            Response chkResp = given()
-//                    .baseUri(BASE_URL)
-//                    .queryParams("key", KEY, "token", TOKEN, "name", "Temp Checklist", "idCard", cardID)
-//                    .post("/1/checklists");
-//            checklistId = chkResp.path("id");
-//        }
-//    }
     @Test(priority = 1)
     @Description("TC-Auth-001 — Verify that creating a board without the key parameter is rejected with 401")
     public void TC_Auth_001_createBoard_noKey() {
